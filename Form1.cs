@@ -2,149 +2,128 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Data.Sql;
-using System.Data.SqlClient;
 using System.Drawing;
+using System.Drawing.Text;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace crud
+namespace notepad
 {
     public partial class Form1 : Form
     {
-        int tr=0, rp = 0,id=0;
-        public static SqlConnection cn=new SqlConnection(@"Data Source=.\SQLEXPRESS;AttachDbFilename=|DataDirectory|\drashti.mdf;Integrated Security=True;User Instance=True");
+        string filename=string.Empty,prevfilecontent=string.Empty;
         public Form1()
         {
             InitializeComponent();
         }
 
-        private void btninsert_Click(object sender, EventArgs e)
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (btninsert.Text != "&Save")
+            savedata();
+        }
+
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog od = new OpenFileDialog();
+            od.Title = "open --notepad";
+            od.Filter = "TextFiles|*.txt";
+            od.DefaultExt = "txt";
+            od.InitialDirectory = "C:\\drashti\\notepad";
+            od.ShowDialog();    
+            if(od.FileName!="")
             {
-                if (txtsnm.Text != "" && txtmob.Text != "")
+                richTextBox1.LoadFile(od.FileName);
+                filename = od.FileName;
+                prevfilecontent=richTextBox1.Text;
+            }
+        }
+
+        private void newToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (filename != string.Empty)
+            {
+                string currentfilecontent = richTextBox1.Text;
+                if (prevfilecontent != currentfilecontent)
                 {
-                    String sql = "insert into stud_details values('" + txtsnm.Text + "','" + txtmob.Text + "')";
-                    SqlDataAdapter da = new SqlDataAdapter(sql, cn);
-                    DataTable dt = new DataTable();
-                    da.Fill(dt);
-                    txtsnm.Text = txtmob.Text = string.Empty;
-                    txtsnm.Focus();
-                    loaddata();
+                    richTextBox1.SaveFile(filename);
+                    cleardata();
+                    currentfilecontent = string.Empty;
                 }
                 else
                 {
-                    MessageBox.Show("Please enter values", "drashti", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    cleardata();
+                    currentfilecontent = string.Empty;
+                }
+            }
+            else if (richTextBox1.Text.Length > 0)
+            {
+                DialogResult dr = MessageBox.Show("Do you want to save?", "Notepad", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (dr == DialogResult.Yes)
+                {
+                    savedata();
+                    cleardata();
+                }
+                else
+                {
+                    cleardata();
+                }
+            }
+        }
+
+        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            filename = string.Empty;
+            savedata();
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void fontColorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ColorDialog cd=new ColorDialog();
+            cd.ShowDialog();
+            richTextBox1.ForeColor = cd.Color;
+        }
+
+        private void fontToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FontDialog fd=new FontDialog();
+            fd.ShowDialog();
+            richTextBox1.Font = fd.Font;
+        }
+        private void cleardata()
+        {
+            richTextBox1.Text= string.Empty;
+            filename = string.Empty;
+            prevfilecontent = string.Empty;
+        }
+
+        private void savedata()
+        {
+            if(filename==string.Empty)
+            {
+                SaveFileDialog sd=new SaveFileDialog();
+                sd.Title = "save --notepad";
+                sd.Filter = "TextFiles|*.txt";
+                sd.DefaultExt = "txt";
+                sd.InitialDirectory = "C:\\drashti\\notepad";
+                sd.ShowDialog();
+                if(sd.FileName!="")
+                {
+                    richTextBox1.SaveFile(sd.FileName);
+                    filename = sd.FileName;
+                    prevfilecontent = richTextBox1.Text;
                 }
             }
             else
             {
-                txtsnm.Text = txtmob.Text = string.Empty;
-                txtsnm.Focus();
-                btninsert.Text = "&Save";
-                btnupdate.Enabled = false;
-                btndelete.Enabled = false;
+                richTextBox1.SaveFile(filename);
             }
         }
-            private void loaddata()
-            {
-                String sql="select * from stud_details";
-                SqlDataAdapter da=new SqlDataAdapter(sql,cn);
-                DataTable dt = new DataTable();
-                da.Fill(dt);
-                dataGridView1.DataSource = dt;
-                tr = dt.Rows.Count - 1;
-            }
-
-            private void btnfirst_Click(object sender, EventArgs e)
-            {
-                rp = 0;
-                Navigate();
-                btnupdate.Enabled = true;
-                btndelete.Enabled = true;
-                btninsert.Text = "&Insert";
-            }
-
-            private void btnnext_Click(object sender, EventArgs e)
-            {
-                if (rp < tr)
-                {
-                    rp++;
-                    Navigate();
-                    btnupdate.Enabled = true;
-                    btndelete.Enabled = true;
-                    btninsert.Text = "&Insert";
-                }
-            }
-
-            private void btnprev_Click(object sender, EventArgs e)
-            {
-                if (rp > 0)
-                {
-                    rp--;
-                    Navigate();
-                    btnupdate.Enabled = true;
-                    btndelete.Enabled = true;
-                    btninsert.Text = "&Insert";
-                }
-            }
-
-            private void btnlast_Click(object sender, EventArgs e)
-            {
-                rp = tr;
-                Navigate();
-                btnupdate.Enabled = true;
-                btndelete.Enabled = true;
-                btninsert.Text = "&Insert";
-            }
-            private void Navigate()
-            {
-                if (tr >= 0)
-                {
-                    String sql = "select * from stud_details";
-                    SqlDataAdapter da = new SqlDataAdapter(sql,cn);
-                    DataTable dt = new DataTable();
-                    da.Fill(dt);
-                    txtsnm.Text = dt.Rows[rp][1].ToString();
-                    txtmob.Text = dt.Rows[rp][2].ToString();
-                    id = Convert.ToInt32(dt.Rows[rp]["id"]);
-                }
-            }
-
-            private void Form1_Load(object sender, EventArgs e)
-            {
-                loaddata();
-            }
-
-            private void btnupdate_Click(object sender, EventArgs e)
-            {
-                if (txtsnm.Text != "" && txtmob.Text != "")
-                {
-                    String sql = "update stud_details set student_name='" + txtsnm.Text + "',mobile_no='" + txtmob.Text + "'where id='" + id + "'";
-                    SqlDataAdapter da = new SqlDataAdapter(sql,cn);
-                    DataTable dataTable = new DataTable();
-                    da.Fill(dataTable);
-                    loaddata();
-                    txtsnm.Text = txtmob.Text = string.Empty;
-                    txtsnm.Focus();
-                    btnupdate.Enabled = false;
-                    btndelete.Enabled = false;
-                }
-            }
-
-            private void btndelete_Click(object sender, EventArgs e)
-            {
-                String sql = "DELETE stud_details  where id='" + id + "'";
-                SqlDataAdapter da = new SqlDataAdapter(sql, cn);
-                DataTable dataTable = new DataTable();
-                da.Fill(dataTable);
-                loaddata();
-                txtsnm.Text = txtmob.Text = string.Empty;
-                txtsnm.Focus();
-                btnupdate.Enabled = false;
-                btndelete.Enabled = false;
-            }
-      }
+    }
 }
