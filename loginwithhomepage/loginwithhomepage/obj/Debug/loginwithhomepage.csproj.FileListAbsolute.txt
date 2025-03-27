@@ -1,0 +1,11 @@
+C:\drashti\c#\loginwithhomepage\loginwithhomepage\obj\Debug\loginwithhomepage.csproj.AssemblyReference.cache
+C:\drashti\c#\loginwithhomepage\loginwithhomepage\obj\Debug\loginwithhomepage.Form1.resources
+C:\drashti\c#\loginwithhomepage\loginwithhomepage\obj\Debug\loginwithhomepage.Properties.Resources.resources
+C:\drashti\c#\loginwithhomepage\loginwithhomepage\obj\Debug\loginwithhomepage.csproj.GenerateResource.cache
+C:\drashti\c#\loginwithhomepage\loginwithhomepage\obj\Debug\loginwithhomepage.csproj.CoreCompileInputs.cache
+C:\drashti\c#\loginwithhomepage\loginwithhomepage\bin\Debug\loginwithhomepage.exe.config
+C:\drashti\c#\loginwithhomepage\loginwithhomepage\bin\Debug\loginwithhomepage.exe
+C:\drashti\c#\loginwithhomepage\loginwithhomepage\bin\Debug\loginwithhomepage.pdb
+C:\drashti\c#\loginwithhomepage\loginwithhomepage\obj\Debug\loginwithhomepage.exe
+C:\drashti\c#\loginwithhomepage\loginwithhomepage\obj\Debug\loginwithhomepage.pdb
+C:\drashti\c#\loginwithhomepage\loginwithhomepage\obj\Debug\loginwithhomepage.Form2.resources
